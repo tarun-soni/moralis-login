@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CustomButton from "./CustomButton";
 import { useMoralisFile } from "react-moralis";
 import ImageCard from "./ImageCard";
+import axios from "axios";
 
 function FileUpload() {
   const [file, setFile] = React.useState<string | null>(null);
@@ -86,6 +87,36 @@ function FileUpload() {
     );
   };
 
+  const bulkUpload = () => {
+    const API_KEY =
+      "7sdoWSuoUuv1XXIcJ03OFDDa2WsuQnh6azFAzEQutmMon4bZUbegq8UQslJ6iAGp";
+    const _file = {
+      path: "./images/test.jpeg",
+      content: {
+        name: "test name",
+        description: "test desc",
+        image: file,
+      },
+    };
+    const ipfsArray = [];
+    console.log("file :>> ", _file);
+
+    axios
+      .post("https://deep-index.moralis.io/api/v2/ipfs/uploadFolder", [_file], {
+        headers: {
+          "X-API-KEY": API_KEY,
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+      })
+      .then((res) => {
+        console.log("res.data", res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
   return (
     <div className="py-10 h-30 bg-gray-300 px-2">
       <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden md:max-w-lg">
@@ -141,6 +172,11 @@ function FileUpload() {
                 <CustomButton
                   text="Upload"
                   onClick={uploadMetaData}
+                  isLoading={isUploading}
+                />
+                <CustomButton
+                  text="Bullk Upload"
+                  onClick={bulkUpload}
                   isLoading={isUploading}
                 />
               </div>

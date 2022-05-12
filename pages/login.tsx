@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
@@ -7,6 +7,7 @@ import ImageCard from "../components/ImageCard";
 
 const CHAIN_ID = 56;
 const Login = () => {
+  const [inputValue, setInputValue] = useState("");
   const {
     authenticate,
     isAuthenticated,
@@ -49,6 +50,7 @@ const Login = () => {
     await logout();
     console.log("logged out");
   };
+
   return (
     <div>
       <h1>Moralis Hello World!</h1>
@@ -67,19 +69,27 @@ const Login = () => {
         <>
           <div className=" flex m-3 p-3 flex-col align-center justify-center w-full">
             <div className="align-center justify-start w-auto">
-              <CustomInput />
+              <CustomInput
+                value={inputValue}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setInputValue(e.target.value)
+                }
+                text={`Enter Title`}
+              />
               <FileUpload />
             </div>
-            {/* <CustomButton
-            text="Logout"
-            onClick={logOut}
-            isLoading={isAuthenticating}
-          /> */}
+            <CustomButton
+              text="Logout"
+              onClick={logOut}
+              isLoading={isAuthenticating}
+            />
           </div>
         </>
       )}
       <h1>User - {user?.id}</h1>
-
+      {console.log("user", user)}
+      {/* <pre>{JSON.stringify(user?.authData, 0, 1)}</pre> */}
+      <br />
       <pre>{JSON.stringify(user, 0, 1)}</pre>
     </div>
   );
