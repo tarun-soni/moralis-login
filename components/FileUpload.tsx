@@ -60,32 +60,32 @@ function FileUpload() {
     );
   };
 
-  const uploadMetaData = () => {
-    // const _file =
+  // const uploadMetaData = () => {
+  //   // const _file =
 
-    uploadToIpfs();
+  //   uploadToIpfs();
 
-    const base64 = btoa(JSON.stringify(metaData));
-    saveFile(
-      "myfile.txt",
-      { base64 },
-      {
-        type: "base64",
-        saveIPFS: true,
-        onSuccess: (result) => {
-          console.log(result.ipfs());
-          const _metaData = {
-            name: "test name",
-            description: "test desc",
-            image: `${result.ipfs()}`,
-          };
-          setMetaData(_metaData);
-        },
+  //   const base64 = btoa(JSON.stringify(metaData));
+  //   saveFile(
+  //     "myfile.txt",
+  //     { base64 },
+  //     {
+  //       type: "base64",
+  //       saveIPFS: true,
+  //       onSuccess: (result) => {
+  //         console.log("result .ipfs", result.ipfs());
+  //         const _metaData = {
+  //           name: "test name",
+  //           description: "test desc",
+  //           image: `${result.ipfs()}`,
+  //         };
+  //         setMetaData(_metaData);
+  //       },
 
-        onError: (error) => console.log(error),
-      }
-    );
-  };
+  //       onError: (error) => console.log(error),
+  //     }
+  //   );
+  // };
 
   const bulkUpload = () => {
     const API_KEY =
@@ -171,7 +171,7 @@ function FileUpload() {
                 </button> */}
                 <CustomButton
                   text="Upload"
-                  onClick={uploadMetaData}
+                  onClick={uploadToIpfs}
                   isLoading={isUploading}
                 />
                 <CustomButton
