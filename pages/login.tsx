@@ -83,32 +83,25 @@ const Login = () => {
         </>
       ) : (
         <>
-          <div className="  border-2 flex m-3 p-3 flex-col align-center justify-center w-full">
-            <div className="align-center justify-start w-auto">
-              <CustomInput
-                value={inputValue}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setInputValue(e.target.value)
-                }
-                text={`Enter Title`}
-              />
-              <FileUpload />
-            </div>
-            <CustomButton
+          {/* <div className=" border-2  flex m-3 p-3 flex-col align-center justify-center w-full"> */}
+          <div className="align-center justify-start w-auto">
+            {/* <CustomInput
+              value={inputValue}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setInputValue(e.target.value)
+              }
+              text={`Enter Title`}
+            /> */}
+            <FileUpload />
+          </div>
+          {/* <CustomButton
               text="Logout"
               onClick={logOut}
               isLoading={isAuthenticating}
-            />
-          </div>
+            /> */}
+          {/* </div> */}
         </>
       )}
-      <h1>User - {user?.id}</h1>
-      {console.log("user", user)}
-      {/* <pre>{JSON.stringify(user?.authData, 0, 1)}</pre> */}
-      <br />
-      {/* <div className="w-40 flex-wrap">
-        <pre>{JSON.stringify(user, 0, 1)}</pre>
-      </div> */}
     </div>
   );
 };

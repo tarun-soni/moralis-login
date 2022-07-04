@@ -3,21 +3,38 @@ import CustomButton from "./CustomButton";
 import { useMoralisFile } from "react-moralis";
 import ImageCard from "./ImageCard";
 import axios from "axios";
+import Image from "next/image";
 
 function FileUpload() {
   const [file, setFile] = React.useState<string | null>(null);
   const { saveFile, isUploading } = useMoralisFile();
 
+  const [previewFile, setPreviewFile] = useState();
   const [metaData, setMetaData] = useState({
     name: "",
     description: "",
     image: "",
   });
+
+  const [images, setImages] = useState([]);
+  const [imageURLS, setImageURLS] = useState([]);
+
   const uploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("event.target.files :>> ", event.target.files);
 
     const file = event.target.files[0];
 
+    var imageList = images;
+    var urlList = imageURLS;
+
+    if (event.target.files && event.target.files[0]) {
+      imageList.push(event.target.files[0]);
+      urlList.push(URL.createObjectURL(event.target.files[0]));
+      setImages(imageList);
+      setImageURLS(urlList);
+    }
+
+    setPreviewFile(file);
     const reader = new FileReader();
 
     reader.readAsArrayBuffer(file);
@@ -31,7 +48,6 @@ function FileUpload() {
       console.log("x", x);
 
       const base64 = Buffer.from(x).toString("base64");
-      console.log("base64", base64);
       setFile(base64);
     };
   };
@@ -52,6 +68,7 @@ function FileUpload() {
             description: "test desc",
             image: `${result.ipfs()}`,
           };
+          console.log("_metaData :>> ", _metaData);
           setMetaData(_metaData);
         },
 
@@ -117,16 +134,30 @@ function FileUpload() {
       });
   };
 
+  //create a preview of the image component to display in the UI
+  const preview = () => {
+    console.log("previewFile :>> ", previewFile);
+    // if (previewFile) {
+    //   return <Image src={previewFile} alt="uploaded-image" />;
+    // }
+    console.log("images :>> ", images);
+    console.log("imageURLS :>> ", imageURLS);
+    images.map((file, index) => {
+      return (
+        <div class="row ">
+          <h1>{file.name}</h1>
+          {/* <input type="text" onChange={uploadTagToClient} /> */}
+          <img src={imageURLS[index]} />
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="py-10 h-30 bg-gray-300 px-2">
       <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden md:max-w-lg">
         <div className="md:flex">
           <div className="w-full">
-            <div className="p-4 border-b-2">
-              <span className="text-lg font-bold text-gray-600">
-                Add documents
-              </span>
-            </div>
             <div className="p-3">
               <div className="mb-2">
                 <span className="text-sm">Title</span>
@@ -135,29 +166,50 @@ function FileUpload() {
                   className="h-12 px-3 w-full border-gray-200 border rounded focus:outline-none focus:border-gray-300"
                 />
               </div>
-              <div className="mb-2">
-                <span>Attachments</span>
-                <div className="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
-                  <div className="absolute">
-                    <div className="flex flex-col items-center ">
-                      <i className="fa fa-cloud-upload fa-3x text-gray-200"></i>
-                      <span className="block text-gray-400 font-normal">
-                        Attach you files here
-                      </span>
-                      <span className="block text-gray-400 font-normal">
-                        or
-                      </span>
-                      <span className="block text-blue-400 font-normal">
-                        Browse files
-                      </span>
-                    </div>
+              <div className="mx-2 my-6">
+                <span className="text-md font-bold text-gray-600">
+                  Attachments
+                </span>
+                {images?.length > 0 ? (
+                  <div className="p-4 ">
+                    {images.map((file, index) => (
+                      <div className="row  w-30 h-60" key={index}>
+                        <h1>{file.name}</h1>
+                        <Image
+                          src={imageURLS[index]}
+                          alt={`${index}`}
+                          // layout="responsive"
+                          // layout="fill"
+                          width={400}
+                          height={200}
+                        />
+                      </div>
+                    ))}
                   </div>
-                  <input
-                    type="file"
-                    className="h-full w-full opacity-0"
-                    onChange={uploadFile}
-                  />
-                </div>
+                ) : (
+                  <div className="relative h-40 rounded-lg border-dashed  border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
+                    <div className="absolute">
+                      <div className="flex flex-col items-center ">
+                        <i className="fa fa-cloud-upload fa-3x text-gray-200"></i>
+                        <span className="block text-gray-400 font-normal">
+                          Attach you files here
+                        </span>
+                        <span className="block text-gray-400 font-normal">
+                          or
+                        </span>
+                        <span className="block text-blue-400 font-normal">
+                          Browse files
+                        </span>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      className="h-full w-full opacity-0"
+                      onChange={uploadFile}
+                    />
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center text-gray-400">
                   <span>Accepted file type:.doc only</span>
                   <span className="flex items-center ">
@@ -174,11 +226,11 @@ function FileUpload() {
                   onClick={uploadToIpfs}
                   isLoading={isUploading}
                 />
-                <CustomButton
+                {/* <CustomButton
                   text="Bullk Upload"
                   onClick={bulkUpload}
                   isLoading={isUploading}
-                />
+                /> */}
               </div>
               <ImageCard data={metaData} />
             </div>
