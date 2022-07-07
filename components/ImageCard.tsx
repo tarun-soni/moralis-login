@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React from "react";
+import ethers from "hardhat";
 
 type Props = { data: any };
 
-const ImageCard = ({ data }: Props) => {
+const ImageCard = ({ data, uploadImageLinkToBlockchain }: Props) => {
   console.log("data :>> ", data);
   return (
     <div className="h-full flex items-center justify-center ">
@@ -18,13 +19,16 @@ const ImageCard = ({ data }: Props) => {
           height={1080}
         />
 
-        <h3 className="text-gray-200 font-bold mt-5">{data.title}</h3>
+        <h3 className="text-gray-200 font-bold mt-5">{data?.title}</h3>
 
         <p className="text-gray-400 font-light mt-2 text-xs">
           {" "}
-          {data.description}
+          {data?.description}
         </p>
-        <button className="w-full bg-green-800  text-green-200  hover:bg-green-700 font-bold py-2 px-4 rounded-md mt-5 ">
+        <button
+          className="w-full bg-green-800  text-green-200  hover:bg-green-700 font-bold py-2 px-4 rounded-md mt-5 "
+          onClick={() => uploadImageLinkToBlockchain(data?.image)}
+        >
           Upload Data to Blockchain
         </button>
       </div>

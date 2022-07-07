@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { useMoralisFile } from "react-moralis";
 import ImageCard from "./ImageCard";
 import axios from "axios";
 import Image from "next/image";
+import { useStore } from "../store";
+// import { getImageUploadDeployedAddress } from "../scripts/deploy";
 
-function FileUpload() {
+function FileUpload({ uploadImageLinkToBlockchain }) {
   const [file, setFile] = React.useState<string | null>(null);
   const { saveFile, isUploading } = useMoralisFile();
 
@@ -18,6 +20,24 @@ function FileUpload() {
 
   const [images, setImages] = useState([]);
   const [imageURLS, setImageURLS] = useState([]);
+
+  const { setImageMetaData } = useStore();
+  // const addr = getImageUploadDeployedAddress();
+  // console.log("addr :>> ", addr);
+  // console.log(
+  //   "getImageUploadDeployedAddress :>> ",
+  //   getImageUploadDeployedAddress()
+  // );
+
+  useEffect(() => {
+    async function run() {
+      // const Greeter = await ethers.getContractFactory("Greeter");
+      // const greeter = await Greeter.deploy("Hello, Hardhat!");
+      // await greeter.deployed();
+      // console.log("Greeter deployed to:", greeter.address);
+    }
+    run();
+  }, []);
 
   const uploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("event.target.files :>> ", event.target.files);
@@ -70,6 +90,7 @@ function FileUpload() {
           };
           console.log("_metaData :>> ", _metaData);
           setMetaData(_metaData);
+          setImageMetaData(_metaData);
         },
 
         onError: (error) => console.log(error),
@@ -132,25 +153,6 @@ function FileUpload() {
       .catch((err) => {
         console.log("err", err);
       });
-  };
-
-  //create a preview of the image component to display in the UI
-  const preview = () => {
-    console.log("previewFile :>> ", previewFile);
-    // if (previewFile) {
-    //   return <Image src={previewFile} alt="uploaded-image" />;
-    // }
-    console.log("images :>> ", images);
-    console.log("imageURLS :>> ", imageURLS);
-    images.map((file, index) => {
-      return (
-        <div class="row ">
-          <h1>{file.name}</h1>
-          {/* <input type="text" onChange={uploadTagToClient} /> */}
-          <img src={imageURLS[index]} />
-        </div>
-      );
-    });
   };
 
   return (
@@ -232,7 +234,10 @@ function FileUpload() {
                   isLoading={isUploading}
                 /> */}
               </div>
-              <ImageCard data={metaData} />
+              <ImageCard
+                data={metaData}
+                uploadImageLinkToBlockchain={uploadImageLinkToBlockchain}
+              />
             </div>
           </div>
         </div>
