@@ -2,17 +2,25 @@ import create from "zustand";
 
 import { User } from "../types";
 
+export type ImageMetaData = {
+  name: "";
+  description: "";
+  image: "";
+};
 interface AppState {
-  user: User;
+  user: User | null;
   isAuthenticated: boolean;
   storeUser: (user: User) => void;
   removeUser: () => void;
+  imageMetaData: ImageMetaData | null;
+  setImageMetaData: (imageMetaData: ImageMetaData) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
   // initial state
   user: null,
   isAuthenticated: false,
+  imageMetaData: null,
 
   // methods for manipulating state
   storeUser: (user: User) => {
@@ -31,33 +39,11 @@ export const useStore = create<AppState>((set) => ({
       user: null,
     }));
   },
+
+  setImageMetaData: (imageMetaData: ImageMetaData) => {
+    set((state) => ({
+      ...state,
+      imageMetaData,
+    }));
+  },
 }));
-
-// addTodo: (description: string) => {
-//   set((state) => ({
-//     todos: [
-//       ...state.todos,
-//       {
-//         id: Math.random().toString(),
-//         description,
-//         completed: false,
-//       } as Todo,
-//     ],
-//   }));
-// },
-
-// removeTodo: (id) => {
-//   set((state) => ({
-//     todos: state.todos.filter((todo) => todo.id !== id),
-//   }));
-// },
-
-// toggleCompletedState: (id) => {
-//   set((state) => ({
-//     todos: state.todos.map((todo) =>
-//       todo.id === id
-//         ? ({ ...todo, completed: !todo.completed } as Todo)
-//         : todo
-//     ),
-//   }));
-// },

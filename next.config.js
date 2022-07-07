@@ -7,6 +7,7 @@ const nextConfig = {
       "ipfs.moralis.io",
       "ipfs.io",
       "via.placeholder.com",
+      "https://via.placeholder.com/150",
     ],
   },
 };
