@@ -23,7 +23,9 @@ async function main() {
 
   // We get the contract to deploy
   const ImageUpload = await ethers.getContractFactory("ImageUpload");
-  const imageUpload = await ImageUpload.deploy("Sample image link");
+  const imageUpload = await ImageUpload.deploy(
+    "https://ipfs.moralis.io:2053/ipfs/QmVzM4AHCdDyEbBp1FEiu3LR6nGpyreaXnxeUS8LVX5Hug"
+  );
 
   await imageUpload.deployed();
 

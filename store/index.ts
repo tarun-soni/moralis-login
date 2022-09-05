@@ -7,6 +7,10 @@ export type ImageMetaData = {
   description: "";
   image: "";
 };
+
+interface ChainData {
+  imageUploadAddress: string;
+}
 interface AppState {
   user: User | null;
   isAuthenticated: boolean;
@@ -14,6 +18,7 @@ interface AppState {
   removeUser: () => void;
   imageMetaData: ImageMetaData | null;
   setImageMetaData: (imageMetaData: ImageMetaData) => void;
+  chainData: ChainData;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -21,6 +26,9 @@ export const useStore = create<AppState>((set) => ({
   user: null,
   isAuthenticated: false,
   imageMetaData: null,
+  chainData: {
+    imageUploadAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  },
 
   // methods for manipulating state
   storeUser: (user: User) => {

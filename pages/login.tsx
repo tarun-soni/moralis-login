@@ -9,10 +9,15 @@ import { ImageMetaData, useStore } from "../store";
 import ImageUpload from "../artifacts/contracts/ImageUpload.sol/ImageUpload.json";
 import { ethers } from "ethers";
 const CHAIN_ID = 56;
-const Login = () => {
-  const imageUploadAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
+import Moralis from "moralis";
+import { useRouter } from "next/router";
+// Moralis.executeFunction(options
+const Login = () => {
+  const imageUploadAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const [inputValue, setInputValue] = useState("");
+
+  const router = useRouter();
 
   const {
     authenticate,
@@ -73,7 +78,25 @@ const Login = () => {
     }
   };
 
-  const uploadImageLinkToBlockchain = async (imageLink) => {
+  const fetchMoralisImage = async () => {
+    await Moralis.enableWeb3();
+    const options: Moralis.ExecuteFunctionOptions = {
+      contractAddress: imageUploadAddress,
+      functionName: "getImageLink",
+      abi: ImageUpload.abi,
+    };
+
+    const imageLink = await Moralis.executeFunction(options);
+
+    console.log("fetched imageLink :>> ", imageLink);
+    if (imageLink) {
+      setAlreadyPresentImageLink([...alreadyPresentImageLink, `${imageLink}`]);
+    }
+
+    console.log("res :>> ", imageLink);
+  };
+
+  const uploadImageLinkToBlockchain = async (imageLink: string) => {
     const windowProvider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = windowProvider.getSigner();
 
@@ -82,10 +105,11 @@ const Login = () => {
       ImageUpload.abi,
       signer
     );
+    console.log("imageContract :>> ", imageContract);
 
     try {
       const fetchedImageLink = await imageContract.setImageLink(imageLink);
-      await imageContract.wait();
+      // await imageContract.wait();
 
       console.log("fetchedImageLink", fetchedImageLink);
 
@@ -95,8 +119,26 @@ const Login = () => {
     }
   };
 
+  const uploadImageLinkToBlockchainMoralis = async (imageLink: string) => {
+    await Moralis.enableWeb3();
+    const options: Moralis.ExecuteFunctionOptions = {
+      contractAddress: imageUploadAddress,
+      functionName: "setImageLink",
+      abi: ImageUpload.abi,
+      params: {
+        _imageLink: imageLink,
+      },
+      // msgValue: Moralis.Units.ETH(0.1),
+    };
+
+    const res = await Moralis.executeFunction(options);
+
+    console.log("res upload :>> ", res);
+  };
+
   useEffect(() => {
-    fetchImage();
+    // fetchImage();
+    fetchMoralisImage();
   }, []);
 
   useEffect(() => {
@@ -129,7 +171,7 @@ const Login = () => {
         .then(function (user) {
           console.log("logged in user:", user);
           console.log(user!.get("ethAddress"));
-          storeUser({ user });
+          if (user) storeUser({ user });
         })
         .catch(function (error) {
           storeUser({ user: null });
@@ -143,9 +185,22 @@ const Login = () => {
     console.log("logged out");
   };
 
+  if (isAuthenticated) router.replace("/dashboard");
+
   return (
     <div>
       <Nav />
+
+      {/* {isAuthenticated ? (
+        router.push("/dashboard")
+      ) : (
+        <CustomButton
+          text="Login with metamask"
+          onClick={login}
+          isLoading={isAuthenticating}
+        />
+      )} */}
+
       {!isAuthenticated ? (
         <>
           <div className="mt-10">
@@ -155,44 +210,8 @@ const Login = () => {
               isLoading={isAuthenticating}
             />
           </div>
-          {/* <button onClick={walletConnectLogin}>
-            Moralis WalletConnect Login
-          </button> */}
         </>
-      ) : (
-        <>
-          {/* <div className=" border-2  flex m-3 p-3 flex-col align-center justify-center w-full"> */}
-          <div className="align-center justify-start w-auto">
-            {alreadyPresentImageLink.map((imageLink, index) => (
-              <ImageCard
-                key={index}
-                data={{
-                  title: "titleee",
-                  description: "sample desc",
-                  image: alreadyPresentImageLink[0],
-                }}
-              />
-            ))}
-
-            {/* <CustomInput
-              value={inputValue}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setInputValue(e.target.value)
-              }
-              text={`Enter Title`}
-            /> */}
-            <FileUpload
-              uploadImageLinkToBlockchain={uploadImageLinkToBlockchain}
-            />
-          </div>
-          {/* <CustomButton
-              text="Logout"
-              onClick={logOut}
-              isLoading={isAuthenticating}
-            /> */}
-          {/* </div> */}
-        </>
-      )}
+      ) : null}
     </div>
   );
 };

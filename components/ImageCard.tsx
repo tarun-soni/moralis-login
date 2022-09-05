@@ -2,13 +2,19 @@ import Image from "next/image";
 import React from "react";
 import ethers from "hardhat";
 
-type Props = { data: any };
+type Props = {
+  data: any;
+  uploadImageLinkToBlockchain?: (image: string) => void;
+  isUploadButtonEnabled?: boolean;
+};
 
-const ImageCard = ({ data, uploadImageLinkToBlockchain }: Props) => {
-  console.log("data :>> ", data);
+const ImageCard = ({
+  data,
+  uploadImageLinkToBlockchain,
+  isUploadButtonEnabled = false,
+}: Props) => {
   return (
     <div className="h-full flex items-center justify-center ">
-      {console.log("props", data)}
       <div className=" delay-50 duration-100 bg-gray-800 p-5 rounded-lg w-80 group my-8">
         <Image
           src={data?.image || "https://via.placeholder.com/150"}
@@ -25,12 +31,14 @@ const ImageCard = ({ data, uploadImageLinkToBlockchain }: Props) => {
           {" "}
           {data?.description}
         </p>
-        <button
-          className="w-full bg-green-800  text-green-200  hover:bg-green-700 font-bold py-2 px-4 rounded-md mt-5 "
-          onClick={() => uploadImageLinkToBlockchain(data?.image)}
-        >
-          Upload Data to Blockchain
-        </button>
+        {isUploadButtonEnabled && (
+          <button
+            className="w-full bg-green-800  text-green-200  hover:bg-green-700 font-bold py-2 px-4 rounded-md mt-5 "
+            onClick={() => uploadImageLinkToBlockchain(data?.image)}
+          >
+            Upload Data to Blockchain
+          </button>
+        )}
       </div>
     </div>
   );

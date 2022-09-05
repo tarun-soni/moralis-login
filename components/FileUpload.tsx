@@ -235,6 +235,7 @@ function FileUpload({ uploadImageLinkToBlockchain }) {
                 /> */}
               </div>
               <ImageCard
+                isUploadButtonEnabled={true}
                 data={metaData}
                 uploadImageLinkToBlockchain={uploadImageLinkToBlockchain}
               />

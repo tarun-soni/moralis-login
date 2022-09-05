@@ -1,11 +1,12 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { lazy } from "react";
 import { useMoralis } from "react-moralis";
 import { useStore } from "../store";
 
 function Nav() {
   const { isAuthenticated, user, removeUser } = useStore();
-
+  const { push } = useRouter();
   const { logout } = useMoralis();
 
   const renderAuthenticatedNav = () => {
@@ -16,6 +17,7 @@ function Nav() {
     console.log("logout");
     await logout();
     removeUser();
+    push("/");
   };
 
   console.log("user :>> ", user);
